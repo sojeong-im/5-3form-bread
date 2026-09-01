@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronLeft, Check, Croissant, Info, Camera, Image as ImageIcon, ArrowLeft, Plus, Map, Plane, Sparkles, Heart } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { db } from '../lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -52,11 +54,31 @@ export default function Form() {
     "/images/gallery/media_1788281342297.jpg"
   ]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const currentQ = QUESTIONS[step];
   
-  const handleNext = () => {
-    if (step < QUESTIONS.length - 1) setStep(step + 1);
+  const handleNext = async () => {
+    if (step < QUESTIONS.length - 2) {
+      setStep(step + 1);
+      return;
+    }
+
+    if (step === QUESTIONS.length - 2) {
+      setIsSubmitting(true);
+      try {
+        await addDoc(collection(db, 'applications'), {
+          ...answers,
+          submittedAt: serverTimestamp(),
+        });
+        setStep(step + 1); // Move to outro
+      } catch (error) {
+        console.error("Error submitting form: ", error);
+        alert("파이어베이스 설정이 필요하거나 제출 중 오류가 발생했습니다.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
   };
   
   const handlePrev = () => {
@@ -479,16 +501,16 @@ export default function Form() {
               <div className="mt-12 flex justify-end">
                 <button
                   onClick={handleNext}
-                  disabled={isNextDisabled()}
+                  disabled={isNextDisabled() || isSubmitting}
                   className={cn(
                     "flex items-center gap-3 px-10 py-5 rounded-[2rem] border-4 text-3xl font-bold transition-all",
-                    isNextDisabled()
+                    isNextDisabled() || isSubmitting
                       ? "bg-foreground/10 border-foreground/20 text-foreground/30 shadow-[4px_4px_0px_0px_rgba(93,58,32,0.1)] cursor-not-allowed"
                       : "bg-bread border-foreground text-white shadow-[0_6px_0_0_#5D3A20] hover:bg-bread-DEFAULT hover:shadow-[0_4px_0_0_#5D3A20] hover:translate-y-[2px] active:translate-y-[6px] active:shadow-none"
                   )}
                 >
-                  {step === QUESTIONS.length - 2 ? '제출하기' : '다음으로'}
-                  {step < QUESTIONS.length - 2 && <ChevronRight size={32} strokeWidth={4} />}
+                  {isSubmitting ? '제출 중...' : step === QUESTIONS.length - 2 ? '제출하기' : '다음으로'}
+                  {!isSubmitting && step < QUESTIONS.length - 2 && <ChevronRight size={32} strokeWidth={4} />}
                 </button>
               </div>
             )}
