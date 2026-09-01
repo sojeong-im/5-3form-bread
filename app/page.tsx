@@ -44,7 +44,12 @@ export default function Form() {
     "/images/gallery/media_1788281311831.jpg",
     "/images/gallery/media_1788281314475.jpg",
     "/images/gallery/media_1788281316144.jpg",
-    "/images/gallery/media_1788281318006.jpg"
+    "/images/gallery/media_1788281318006.jpg",
+    "/images/gallery/media_1788281326776.jpg",
+    "/images/gallery/media_1788281330105.jpg",
+    "/images/gallery/media_1788281333829.jpg",
+    "/images/gallery/media_1788281335123.jpg",
+    "/images/gallery/media_1788281342297.jpg"
   ]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
