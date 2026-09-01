@@ -33,11 +33,13 @@ export default function Form() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, any>>({});
   
-  // Gallery state (Mock photos)
+  // Gallery state (Uploaded photos)
   const [photos, setPhotos] = useState<string[]>([
-    "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=80",
-    "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=800&q=80",
-    "https://images.unsplash.com/photo-1555507036-ab1f40ce88cb?w=800&q=80"
+    "/images/gallery/media_1788281294364.jpg",
+    "/images/gallery/media_1788281295474.jpg",
+    "/images/gallery/media_1788281297747.jpg",
+    "/images/gallery/media_1788281299065.jpg",
+    "/images/gallery/media_1788281303764.jpg"
   ]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -336,7 +338,7 @@ export default function Form() {
             홈으로
           </button>
           <h2 
-            className="text-4xl font-bold text-bread drop-shadow-sm hidden md:block"
+            className="text-4xl md:text-5xl font-bold text-bread drop-shadow-sm hidden md:block"
             style={{ textShadow: '2px 2px 0 #5D3A20, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff' }}
           >
             빵실빵실 사진첩 📸
@@ -344,6 +346,14 @@ export default function Form() {
         </header>
 
         <main className="max-w-4xl mx-auto">
+          {/* Gallery Title/Description replacing scrapbook tape or adding a header */}
+          <div className="mb-12 text-center relative">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm h-12 bg-white/40 -rotate-2 -z-10 blur-sm"></div>
+            <h3 className="text-3xl md:text-4xl font-bold text-foreground inline-block px-8 py-4 bg-white border-4 border-foreground border-dashed rounded-2xl shadow-[4px_4px_0_0_#5D3A20]">
+              2026.03 ~ 2026.08<br/>이렇게 활동했어요! 🥨
+            </h3>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             <AnimatePresence>
               {photos.map((url, i) => (
