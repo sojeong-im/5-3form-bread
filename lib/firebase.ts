@@ -1,15 +1,14 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-// Your web app's Firebase configuration
-// For Next.js, we use NEXT_PUBLIC_ prefix so these are available on the client side
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+  apiKey: "AIzaSyA_kmpmk3ERYb-mZYxBS58FWvZTpshaS9w",
+  authDomain: "bread-7e182.firebaseapp.com",
+  projectId: "bread-7e182",
+  storageBucket: "bread-7e182.firebasestorage.app",
+  messagingSenderId: "306915123246",
+  appId: "1:306915123246:web:ef25d62064289323f7bfbf",
+  measurementId: "G-MRBBFZQ4DS"
 };
 
 // Initialize Firebase only once
