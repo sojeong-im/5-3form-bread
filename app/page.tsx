@@ -55,6 +55,8 @@ export default function Form() {
   ]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showCodePrompt, setShowCodePrompt] = useState(false);
+  const [memberCode, setMemberCode] = useState("");
 
   const currentQ = QUESTIONS[step];
   
@@ -422,13 +424,77 @@ export default function Form() {
             onChange={handlePhotoUpload}
           />
           <button 
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => setShowCodePrompt(true)}
             className="flex items-center gap-3 bg-bread border-4 border-foreground text-white px-8 py-5 rounded-full text-2xl font-bold shadow-[4px_8px_0_0_#5D3A20] hover:bg-bread-dark hover:-translate-y-2 active:translate-y-[4px] active:shadow-[4px_4px_0_0_#5D3A20] transition-all"
           >
             <Plus size={32} strokeWidth={4} />
             <span style={{ textShadow: '2px 2px 0 #5D3A20' }}>사진 올리기</span>
           </button>
         </div>
+
+        {/* Member Code Modal */}
+        <AnimatePresence>
+          {showCodePrompt && (
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-6"
+            >
+              <motion.div 
+                initial={{ scale: 0.9, y: 20 }} 
+                animate={{ scale: 1, y: 0 }} 
+                exit={{ scale: 0.9, y: 20 }}
+                className="bg-white border-4 border-foreground rounded-[2rem] p-8 max-w-sm w-full shadow-[8px_8px_0_0_#5D3A20]"
+              >
+                <h3 className="text-3xl font-bold text-bread mb-4" style={{ textShadow: '2px 2px 0 #5D3A20, -2px -2px 0 #5D3A20, 2px -2px 0 #5D3A20, -2px 2px 0 #5D3A20, 0 4px 0 #5D3A20' }}>비밀번호 확인 🤫</h3>
+                <p className="text-foreground/80 mb-8 font-bold text-xl leading-relaxed">
+                  빵실빵실 부원만 사진을 올릴 수 있어요!<br/>회원 코드를 입력해주세요.
+                </p>
+                <input 
+                  type="password" 
+                  value={memberCode}
+                  onChange={(e) => setMemberCode(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      if (memberCode === '0000') {
+                        setShowCodePrompt(false);
+                        setMemberCode('');
+                        setTimeout(() => fileInputRef.current?.click(), 100);
+                      } else {
+                        alert('코드가 일치하지 않습니다! (기본코드: 0000)');
+                      }
+                    }
+                  }}
+                  className="w-full bg-bread-light/30 border-4 border-foreground rounded-2xl p-4 text-2xl mb-8 outline-none focus:bg-white transition-colors focus:border-bread shadow-inner tracking-widest text-center"
+                  placeholder="****"
+                />
+                <div className="flex gap-4">
+                  <button 
+                    onClick={() => { setShowCodePrompt(false); setMemberCode(''); }} 
+                    className="flex-1 py-4 bg-white border-4 border-foreground rounded-2xl font-bold text-xl hover:bg-bread-light shadow-[4px_4px_0_0_#5D3A20] active:translate-y-[4px] active:shadow-none transition-all"
+                  >
+                    취소
+                  </button>
+                  <button 
+                    onClick={() => {
+                      if(memberCode === '0000') {
+                        setShowCodePrompt(false);
+                        setMemberCode('');
+                        setTimeout(() => fileInputRef.current?.click(), 100);
+                      } else {
+                        alert('코드가 일치하지 않습니다! (기본코드: 0000)');
+                      }
+                    }} 
+                    className="flex-1 py-4 bg-bread border-4 border-foreground text-white rounded-2xl font-bold text-xl shadow-[4px_4px_0_0_#5D3A20] active:translate-y-[4px] active:shadow-none transition-all"
+                  >
+                    확인
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     );
   }
