@@ -189,6 +189,16 @@ export default function AdminPage() {
                           
                           <div className="space-y-6">
                             <div>
+                              <p className="text-sm font-bold text-bread-dark mb-1">학교 / 직장 🏫</p>
+                              <p className="text-xl font-bold p-4 bg-[#FDF7EC] border-4 border-foreground rounded-xl">{app.school || '-'}</p>
+                            </div>
+
+                            <div>
+                              <p className="text-sm font-bold text-bread-dark mb-1">전공 / 직무 📚</p>
+                              <p className="text-xl font-bold p-4 bg-[#FDF7EC] border-4 border-foreground rounded-xl">{app.major || '-'}</p>
+                            </div>
+
+                            <div>
                               <p className="text-sm font-bold text-bread-dark mb-1">가까운 지하철역 🚇</p>
                               <p className="text-xl font-bold p-4 bg-[#FDF7EC] border-4 border-foreground rounded-xl">{app.subway || '-'}</p>
                             </div>
