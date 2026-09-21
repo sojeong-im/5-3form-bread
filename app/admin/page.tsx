@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
-import { Lock, FileText, ArrowLeft, RefreshCw, ChevronDown, ChevronUp, User } from 'lucide-react';
+import { Lock, FileText, ArrowLeft, RefreshCw, ChevronDown, ChevronUp, User, Phone, Copy, Check } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -17,6 +17,16 @@ export default function AdminPage() {
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [copiedContactId, setCopiedContactId] = useState<string | null>(null);
+
+  const handleCopyContact = (e: React.MouseEvent, contact: string, id: string) => {
+    e.stopPropagation();
+    if (typeof window !== 'undefined' && navigator?.clipboard) {
+      navigator.clipboard.writeText(contact);
+      setCopiedContactId(id);
+      setTimeout(() => setCopiedContactId(null), 2000);
+    }
+  };
 
   const handleLogin = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -166,9 +176,15 @@ export default function AdminPage() {
                               {app.gender || '성별미상'}
                             </span>
                           </div>
-                          <p className="text-foreground/70 font-bold text-lg">
-                            {app.age ? `${app.age}세` : '나이미상'} • {app.job || '직업미상'}
-                          </p>
+                          <div className="flex flex-wrap items-center gap-2 text-foreground/70 font-bold text-base md:text-lg">
+                            <span>{app.age ? `${app.age}세` : '나이미상'} • {app.job || '직업미상'}</span>
+                            {(app.contact || app.phone) && (
+                              <span className="inline-flex items-center gap-1.5 text-bread-dark bg-[#FDF7EC] border-2 border-foreground px-2.5 py-0.5 rounded-lg text-sm font-bold shadow-[2px_2px_0_0_#5D3A20]">
+                                <Phone size={14} strokeWidth={2.5} />
+                                {app.contact || app.phone}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                       
@@ -188,6 +204,42 @@ export default function AdminPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                           
                           <div className="space-y-6">
+                            <div>
+                              <p className="text-sm font-bold text-bread-dark mb-1">연락처(전화번호) 📱</p>
+                              <div className="flex items-center justify-between p-4 bg-[#FDF7EC] border-4 border-foreground rounded-xl gap-2 flex-wrap sm:flex-nowrap">
+                                <span className="text-xl font-bold select-all">{app.contact || app.phone || '연락처 없음'}</span>
+                                {(app.contact || app.phone) && (
+                                  <div className="flex items-center gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={(e) => handleCopyContact(e, String(app.contact || app.phone), app.id)}
+                                      className="flex items-center gap-1 bg-white border-2 border-foreground text-foreground px-3 py-1.5 rounded-lg text-sm font-bold shadow-[2px_2px_0_0_#5D3A20] hover:bg-bread-light active:translate-y-[2px] active:shadow-none transition-all"
+                                    >
+                                      {copiedContactId === app.id ? (
+                                        <>
+                                          <Check size={16} strokeWidth={2.5} className="text-green-600" />
+                                          <span className="text-green-600">복사됨!</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Copy size={16} strokeWidth={2.5} />
+                                          <span>복사</span>
+                                        </>
+                                      )}
+                                    </button>
+                                    <a
+                                      href={`tel:${String(app.contact || app.phone).replace(/[^0-9+]/g, '')}`}
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="flex items-center gap-1 bg-bread border-2 border-foreground text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-[2px_2px_0_0_#5D3A20] hover:bg-bread-dark active:translate-y-[2px] active:shadow-none transition-all"
+                                    >
+                                      <Phone size={16} strokeWidth={2.5} />
+                                      <span>통화</span>
+                                    </a>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
                             <div>
                               <p className="text-sm font-bold text-bread-dark mb-1">학교 / 직장 🏫</p>
                               <p className="text-xl font-bold p-4 bg-[#FDF7EC] border-4 border-foreground rounded-xl">{app.school || '-'}</p>
